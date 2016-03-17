@@ -1,0 +1,21 @@
+{
+	"name": "promessa",
+	"version": "0.1.0",
+	"description": "Promises library which complies with the Promises/A+ specification, written with a focus towards readability.",
+	"keywords": [
+		"promise",
+		"promise/A+",
+		"promises",
+		"promises-aplus"
+	],
+	"author": {
+		"name": "Peter Mescalchin",
+		"url": "http://magnetikonline.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/magnetikonline/promessa.git"
+	},
+	"license": "MIT",
+	"main": "index.js"
+}
