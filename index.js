@@ -233,7 +233,7 @@ function runHandler(promise,handler) {
 function resolve(promise,value) {
 
 	if (promise === value) {
-		// you can't resolve a promise with itself - results in recursive resolution loop
+		// you can't resolve a promise with itself - would result in a recursive resolution loop
 		return finalize(
 			promise,STATE_REJECTED,
 			new TypeError('Unable to resolve promise with itself')
@@ -265,12 +265,12 @@ function resolve(promise,value) {
 				thenHandler = value.then;
 
 			} catch (ex) {
-				// exception thrown fetching [value.then()] - reject promise as final state
+				// exception thrown calling [value.then()] - reject promise as final state
 				return finalize(promise,STATE_REJECTED,ex);
 			}
 
 			if (isFunction(thenHandler)) {
-				// callable then() function found - call against promise
+				// callable then() function returned - call against promise
 				return runHandler(
 					promise,
 					thenHandler.bind(value)
