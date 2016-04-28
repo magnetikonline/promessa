@@ -9,21 +9,21 @@ function createTestAdapter() {
 
 	// return test adapter/harness as expected by [promises-aplus-tests]
 	return {
-		resolved: function(value) {
+		resolved: (value) => {
 
 			return Promessa.resolve(value);
 		},
-		rejected: function(err) {
+		rejected: (reason) => {
 
-			return Promessa.reject(err);
+			return Promessa.reject(reason);
 		},
-		deferred: function() {
+		deferred: () => {
 
 			var funcResolve,
 				funcReject;
 
 			return {
-				promise: new Promessa(function(resolve,reject) {
+				promise: new Promessa((resolve,reject) => {
 
 					// hold reference to resolve/reject handlers
 					funcResolve = resolve;
@@ -38,10 +38,10 @@ function createTestAdapter() {
 
 function runExtensionsTestSuite() {
 
-	// note: all assert method calls made on process.nextTick() to avoid .then()/.catch() catching assert throws
+	// note: all assert method calls are made on process.nextTick() to avoid .then()/.catch() catching assert throws
 	function createDelayedPromise(delay,value,isResolve) {
 
-		return new Promessa(function(resolve,reject) {
+		return new Promessa((resolve,reject) => {
 
 			if (isResolve) {
 				// resolve promise after timeout passes
@@ -55,7 +55,7 @@ function runExtensionsTestSuite() {
 	}
 
 	// testing: Promessa.all()
-	(function() {
+	(() => {
 
 		var PROMISE_REJECT_VALUE = 'In error',
 			instance,
@@ -72,7 +72,7 @@ function runExtensionsTestSuite() {
 
 		// test: ensure Promessa.all() passed invalid promise list throws error
 		assert.throws(
-			function() {
+			() => {
 
 				Promessa.all(undefined);
 			},
@@ -91,7 +91,7 @@ function runExtensionsTestSuite() {
 		instance = Promessa.all(promiseList);
 
 		instance
-			.then(function(valueList) {
+			.then((valueList) => {
 
 				process.nextTick(assert.deepEqual.bind(
 					null,
@@ -100,9 +100,9 @@ function runExtensionsTestSuite() {
 					'Expected Promessa.all() value list different to actual'
 				));
 			})
-			.catch(function(err) {
+			.catch((reason) => {
 
-				process.nextTick(function() {
+				process.nextTick(() => {
 
 					throw new Error('Execution should not end in Promise.catch() block');
 				});
@@ -119,18 +119,18 @@ function runExtensionsTestSuite() {
 		instance = Promessa.all(promiseList);
 
 		instance
-			.then(function() {
+			.then(() => {
 
-				process.nextTick(function() {
+				process.nextTick(() => {
 
 					throw new Error('Execution should not end in Promise.then() block');
 				});
 			})
-			.catch(function(err) {
+			.catch((reason) => {
 
 				process.nextTick(assert.bind(
 					null,
-					err == PROMISE_REJECT_VALUE,
+					reason == PROMISE_REJECT_VALUE,
 					'Expected execution to end with an error value of [' + PROMISE_REJECT_VALUE + ']'
 				));
 			});
@@ -138,7 +138,7 @@ function runExtensionsTestSuite() {
 
 
 	// testing: Promessa.race()
-	(function() {
+	(() => {
 
 		var PROMISE_RESOLVE_VALUE = 'Promise resolved',
 			PROMISE_REJECT_VALUE = 'In error',
@@ -155,7 +155,7 @@ function runExtensionsTestSuite() {
 
 		// test: ensure Promessa.race() passed invalid promise list throws error
 		assert.throws(
-			function() {
+			() => {
 
 				Promessa.race(undefined);
 			},
@@ -168,7 +168,7 @@ function runExtensionsTestSuite() {
 			var instance = Promessa.race(promiseList);
 
 			instance
-				.then(function(value) {
+				.then((value) => {
 
 					process.nextTick(assert.bind(
 						null,
@@ -176,9 +176,9 @@ function runExtensionsTestSuite() {
 						'Expected Promessa.race() to finish with a value of [' + PROMISE_RESOLVE_VALUE + ']'
 					));
 				})
-				.catch(function(err) {
+				.catch((reason) => {
 
-					process.nextTick(function() {
+					process.nextTick(() => {
 
 						throw new Error('Execution should not end in Promise.catch() block');
 					});
@@ -214,18 +214,18 @@ function runExtensionsTestSuite() {
 			var instance = Promessa.race(promiseList);
 
 			instance
-				.then(function(value) {
+				.then((value) => {
 
-					process.nextTick(function() {
+					process.nextTick(() => {
 
 						throw new Error('Execution should not end in Promise.then() block');
 					});
 				})
-				.catch(function(err) {
+				.catch((reason) => {
 
 					process.nextTick(assert.bind(
 						null,
-						err == PROMISE_REJECT_VALUE,
+						reason == PROMISE_REJECT_VALUE,
 						'Expected Promessa.race() to finish with a value of [' + PROMISE_REJECT_VALUE + ']'
 					));
 				});
@@ -243,7 +243,7 @@ function runExtensionsTestSuite() {
 
 
 // start tests
-testSuite(createTestAdapter(),function(err) {
+testSuite(createTestAdapter(),(err) => {
 
 	if (err !== null) {
 		// errors with core test suite, not able to continue

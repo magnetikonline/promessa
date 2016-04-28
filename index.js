@@ -47,7 +47,7 @@ Promessa.prototype.catch = function(onRejected) {
 
 Promessa.resolve = function(value) {
 
-	return new Promessa(function(resolve) {
+	return new Promessa((resolve) => {
 
 		resolve(value);
 	});
@@ -55,7 +55,7 @@ Promessa.resolve = function(value) {
 
 Promessa.reject = function(reason) {
 
-	// injecting rejected promise state manually, avoid calling finalize()/queueDeferred() when not required
+	// injecting rejected promise state manually, avoid calls to finalize()/queueDeferred() when not required
 	var promise = new Promessa();
 	promise.state = STATE_REJECTED;
 	promise.value = reason;
@@ -74,19 +74,19 @@ Promessa.all = function(promiseList) {
 		processor = Promessa.resolve();
 
 	// add each promise (or promise like) item to processor chain
-	promiseList.forEach(function(promiseItem) {
-		processor = processor.then(function() {
+	promiseList.forEach((promiseItem) => {
+		processor = processor.then(() => {
 
 			// await on promise to finalize
 			return promiseItem;
-		}).then(function(value) {
+		}).then((value) => {
 
 			// add finalized value to list
 			valueList.push(value);
 		});
 	});
 
-	return processor.then(function() {
+	return processor.then(() => {
 
 		// return list of finalized promise values
 		return valueList;
@@ -100,15 +100,15 @@ Promessa.race = function(promiseList) {
 		throw new TypeError('Method expects an array of promises')
 	}
 
-	return new Promessa(function(resolve,reject) {
+	return new Promessa((resolve,reject) => {
 
-		promiseList.forEach(function(promiseItem) {
+		promiseList.forEach((promiseItem) => {
 
 			// resolve each promise (or promise like) item and in turn resolve()/reject() our race promise
 			// by design the 'race' promise can only resolve/reject once, so first promise item to finalize wins
 			promiseItem = (isPromise(promiseItem))
 				? promiseItem // already a promise
-				: Promessa.resolve(promiseItem); // convert a non-promise
+				: Promessa.resolve(promiseItem); // convert non-promise
 
 			promiseItem.then(resolve,reject);
 		});
@@ -153,7 +153,7 @@ function queueDeferred(promise) {
 	}
 
 	promise.deferredIsQueued = true;
-	process.nextTick(function() {
+	process.nextTick(() => {
 
 		promise.deferredIsQueued = false;
 		while (promise.deferredList.length > 0) {
@@ -167,7 +167,7 @@ function queueDeferred(promise) {
 				// no handler defined for deferred promise
 				// directly set deferred promise with parent finalized state/value
 				finalize(deferredPromise,promise.state,promise.value);
-				continue; // jump next deferred
+				continue; // jump to next deferred
 			}
 
 			// execute deferred promise handler based on parent promise finalized state/value
@@ -194,25 +194,25 @@ function runHandler(promise,handler) {
 
 	try {
 		handler(
-			function(value) {
+			// resolve callback
+			(value) => {
 
 				if (called) {
 					// already called
 					return;
 				}
 
-				// resolve
 				called = true;
 				resolve(promise,value);
 			},
-			function(reason) {
+			// reject callback
+			(reason) => {
 
 				if (called) {
 					// already called
 					return;
 				}
 
-				// reject
 				called = true;
 				finalize(promise,STATE_REJECTED,reason);
 			}
@@ -248,8 +248,8 @@ function resolve(promise,value) {
 			if (childPromise.state == STATE_PENDING) {
 				// promise not finalized - await
 				return childPromise.then(
-					function(value) { resolve(promise,value); },
-					function(err) { finalize(promise,STATE_REJECTED,err); }
+					(value) => { resolve(promise,value); },
+					(reason) => { finalize(promise,STATE_REJECTED,reason); }
 				);
 			}
 
@@ -270,7 +270,7 @@ function resolve(promise,value) {
 			}
 
 			if (isFunction(thenHandler)) {
-				// callable then() function returned - call against promise
+				// callable then() function available - call against promise
 				return runHandler(
 					promise,
 					thenHandler.bind(value)
