@@ -1,6 +1,6 @@
 'use strict';
 
-var assert = require('assert'),
+let assert = require('assert'),
 	testSuite = require('promises-aplus-tests'),
 	Promessa = require('../index.js');
 
@@ -19,7 +19,7 @@ function createTestAdapter() {
 		},
 		deferred: () => {
 
-			var funcResolve,
+			let funcResolve,
 				funcReject;
 
 			return {
@@ -57,7 +57,7 @@ function runExtensionsTestSuite() {
 	// testing: Promessa.all()
 	(() => {
 
-		var PROMISE_REJECT_VALUE = 'In error',
+		let PROMISE_REJECT_VALUE = 'In error',
 			instance,
 			promiseList;
 
@@ -140,7 +140,7 @@ function runExtensionsTestSuite() {
 	// testing: Promessa.race()
 	(() => {
 
-		var PROMISE_RESOLVE_VALUE = 'Promise resolved',
+		let PROMISE_RESOLVE_VALUE = 'Promise resolved',
 			PROMISE_REJECT_VALUE = 'In error',
 			instance;
 
@@ -165,7 +165,7 @@ function runExtensionsTestSuite() {
 
 		function testResolved(promiseList) {
 
-			var instance = Promessa.race(promiseList);
+			let instance = Promessa.race(promiseList);
 
 			instance
 				.then((value) => {
@@ -211,7 +211,7 @@ function runExtensionsTestSuite() {
 
 		function testRejected(promiseList) {
 
-			var instance = Promessa.race(promiseList);
+			let instance = Promessa.race(promiseList);
 
 			instance
 				.then((value) => {

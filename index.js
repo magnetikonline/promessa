@@ -1,6 +1,6 @@
 'use strict';
 
-var STATE_PENDING = 0,
+let STATE_PENDING = 0,
 	STATE_RESOLVED = 1,
 	STATE_REJECTED = 2;
 
@@ -28,7 +28,7 @@ function Promessa(handler) {
 Promessa.prototype.then = function(onResolved,onRejected) {
 
 	// create new promise and set resolve/reject handlers
-	var promise = new Promessa();
+	let promise = new Promessa();
 	promise.onResolved = (isFunction(onResolved)) ? onResolved : null;
 	promise.onRejected = (isFunction(onRejected)) ? onRejected : null;
 
@@ -56,7 +56,7 @@ Promessa.resolve = function(value) {
 Promessa.reject = function(reason) {
 
 	// injecting rejected promise state manually, avoid calls to finalize()/queueDeferred() when not required
-	var promise = new Promessa();
+	let promise = new Promessa();
 	promise.state = STATE_REJECTED;
 	promise.value = reason;
 
@@ -70,7 +70,7 @@ Promessa.all = function(promiseList) {
 		throw new TypeError('Method expects an array of promises')
 	}
 
-	var valueList = [],
+	let valueList = [],
 		processor = Promessa.resolve();
 
 	// add each promise (or promise like) item to processor chain
@@ -158,7 +158,7 @@ function queueDeferred(promise) {
 		promise.deferredIsQueued = false;
 		while (promise.deferredList.length > 0) {
 			// shift deferred promise off stack and determine appropriate handler to call
-			var deferredPromise = promise.deferredList.shift(),
+			let deferredPromise = promise.deferredList.shift(),
 				deferredHandler = (promise.state == STATE_RESOLVED)
 					? deferredPromise.onResolved
 					: deferredPromise.onRejected;
@@ -171,7 +171,7 @@ function queueDeferred(promise) {
 			}
 
 			// execute deferred promise handler based on parent promise finalized state/value
-			var returnValue;
+			let returnValue;
 
 			try {
 				returnValue = deferredHandler(promise.value);
@@ -190,7 +190,7 @@ function queueDeferred(promise) {
 function runHandler(promise,handler) {
 
 	// ensures one of resolve()/reject() is called only once by given handler function
-	var called;
+	let called;
 
 	try {
 		handler(
@@ -243,7 +243,7 @@ function resolve(promise,value) {
 	if (value) {
 		if (isPromise(value)) {
 			// resolved value is itself another promise
-			var childPromise = value;
+			let childPromise = value;
 
 			if (childPromise.state == STATE_PENDING) {
 				// promise not finalized - await
@@ -259,7 +259,7 @@ function resolve(promise,value) {
 
 		if ((typeof value == 'object') || isFunction(value)) {
 			// attempt to action .then() function on the given object/function
-			var thenHandler;
+			let thenHandler;
 
 			try {
 				thenHandler = value.then;

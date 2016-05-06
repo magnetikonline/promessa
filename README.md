@@ -14,9 +14,9 @@ A Node.js Promises library which complies with the [Promises/A+ specification](h
 
 ## Usage
 ```js
-var Promessa = require('promessa');
+let Promessa = require('promessa');
 
-var myPromise = new Promessa((resolve,reject) => {
+let myPromise = new Promessa((resolve,reject) => {
 
 	// implement here
 });
