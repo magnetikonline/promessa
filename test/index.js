@@ -55,8 +55,7 @@ function runExtensionsTestSuite() {
 	}
 
 	// testing: Promessa.all()
-	(() => {
-
+	{
 		let PROMISE_REJECT_VALUE = 'In error',
 			instance,
 			promiseList;
@@ -134,12 +133,11 @@ function runExtensionsTestSuite() {
 					'Expected execution to end with an error value of [' + PROMISE_REJECT_VALUE + ']'
 				));
 			});
-	})();
+	}
 
 
 	// testing: Promessa.race()
-	(() => {
-
+	{
 		let PROMISE_RESOLVE_VALUE = 'Promise resolved',
 			PROMISE_REJECT_VALUE = 'In error',
 			instance;
@@ -238,7 +236,7 @@ function runExtensionsTestSuite() {
 			createDelayedPromise(20,'Slow',true),
 			createDelayedPromise(30,'Slowest',true)
 		]);
-	})();
+	}
 }
 
 
