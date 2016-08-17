@@ -105,7 +105,7 @@ Promessa.race = function(promiseList) {
 		promiseList.forEach((promiseItem) => {
 
 			// resolve each promise (or promise like) item and in turn resolve()/reject() our race promise
-			// by design the 'race' promise can only resolve/reject once, so first promise item to finalize wins
+			// by design the 'race' promise can only resolve/reject once, so first promise to finalize wins
 			promiseItem = (isPromise(promiseItem))
 				? promiseItem // already a promise
 				: Promessa.resolve(promiseItem); // convert non-promise
@@ -148,7 +148,7 @@ function queueDeferred(promise) {
 		(promise.deferredList.length < 1) ||
 		(promise.deferredIsQueued)
 	) {
-		// promise isn't finalized yet, or deferred promises are already been queued to run
+		// promise isn't finalized yet, or deferred promises are already queued to run
 		return;
 	}
 
