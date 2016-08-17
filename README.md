@@ -1,9 +1,9 @@
-<a href="http://promises-aplus.github.com/promises-spec">
-	<img src="http://promises-aplus.github.com/promises-spec/assets/logo-small.png" align="right" alt="Promises/A+ logo" />
+<a href="https://promisesaplus.com/">
+	<img src="https://promisesaplus.com/assets/logo-small.png" alt="Promises/A+ logo" title="Promises/A+ 1.0 compliant" align="right" />
 </a>
 
 # Promessa
-A Node.js Promises library which complies with the [Promises/A+ specification](http://promises-aplus.github.com/promises-spec). Written with a focus towards readability over high performance and used as a learning exercise to better understand how Promises function and evaluate themselves internally.
+A Node.js Promises library which complies with the [Promises/A+ specification](https://promisesaplus.com/). Written with a focus towards readability over high performance and used as a learning exercise to better understand how Promises function and evaluate themselves internally.
 
 [![NPM](https://nodei.co/npm/promessa.png?downloads=true)](https://nodei.co/npm/promessa/)
 
