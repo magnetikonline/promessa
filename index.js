@@ -5,45 +5,46 @@ let STATE_PENDING = 0,
 	STATE_REJECTED = 2;
 
 
-module.exports = Promessa;
+class Promessa {
 
-function Promessa(handler) {
+	constructor(handler) {
 
-	// setup initial promise state
-	this.state = STATE_PENDING;
-	this.value = undefined;
+		// setup initial promise state
+		this.state = STATE_PENDING;
+		this.value = undefined;
 
-	this.deferredIsQueued = false;
-	this.deferredList = [];
+		this.deferredIsQueued = false;
+		this.deferredList = [];
 
-	this.onResolved = null;
-	this.onRejected = null;
+		this.onResolved = null;
+		this.onRejected = null;
 
-	if (isFunction(handler)) {
-		// commence promise resolution
-		runHandler(this,handler);
+		if (isFunction(handler)) {
+			// commence promise resolution
+			runHandler(this,handler);
+		}
+	}
+
+	then(onResolved,onRejected) {
+
+		// create new promise and set resolve/reject handlers
+		let promise = new Promessa();
+		promise.onResolved = (isFunction(onResolved)) ? onResolved : null;
+		promise.onRejected = (isFunction(onRejected)) ? onRejected : null;
+
+		// add to promise deferred list and process all deferred
+		this.deferredList.push(promise);
+		queueDeferred(this);
+
+		// return chained promise
+		return promise;
+	}
+
+	catch(onRejected) {
+
+		return this.then(null,onRejected);
 	}
 }
-
-Promessa.prototype.then = function(onResolved,onRejected) {
-
-	// create new promise and set resolve/reject handlers
-	let promise = new Promessa();
-	promise.onResolved = (isFunction(onResolved)) ? onResolved : null;
-	promise.onRejected = (isFunction(onRejected)) ? onRejected : null;
-
-	// add to promise deferred list and process all deferred
-	this.deferredList.push(promise);
-	queueDeferred(this);
-
-	// return chained promise
-	return promise;
-};
-
-Promessa.prototype.catch = function(onRejected) {
-
-	return this.then(null,onRejected);
-};
 
 Promessa.resolve = function(value) {
 
@@ -282,3 +283,5 @@ function resolve(promise,value) {
 	// finalize promise with simple value (not a promise/thenable)
 	finalize(promise,STATE_RESOLVED,value);
 }
+
+module.exports = Promessa;

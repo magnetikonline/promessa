@@ -130,7 +130,7 @@ function runExtensionsTestSuite() {
 				process.nextTick(assert.bind(
 					null,
 					reason == PROMISE_REJECT_VALUE,
-					'Expected execution to end with an error value of [' + PROMISE_REJECT_VALUE + ']'
+					`Expected execution to end with an error value of [${PROMISE_REJECT_VALUE}]`
 				));
 			});
 	}
@@ -171,7 +171,7 @@ function runExtensionsTestSuite() {
 					process.nextTick(assert.bind(
 						null,
 						value == PROMISE_RESOLVE_VALUE,
-						'Expected Promessa.race() to finish with a value of [' + PROMISE_RESOLVE_VALUE + ']'
+						`Expected Promessa.race() to finish with a value of [${PROMISE_RESOLVE_VALUE}]`
 					));
 				})
 				.catch((reason) => {
@@ -224,7 +224,7 @@ function runExtensionsTestSuite() {
 					process.nextTick(assert.bind(
 						null,
 						reason == PROMISE_REJECT_VALUE,
-						'Expected Promessa.race() to finish with a value of [' + PROMISE_REJECT_VALUE + ']'
+						`Expected Promessa.race() to finish with a value of [${PROMISE_REJECT_VALUE}]`
 					));
 				});
 		}
