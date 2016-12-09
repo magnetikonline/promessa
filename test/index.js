@@ -39,11 +39,11 @@ function createTestAdapter() {
 function runExtensionsTestSuite() {
 
 	// note: all assert method calls are made on process.nextTick() to avoid .then()/.catch() catching assert throws
-	function createDelayedPromise(delay,value,isResolve) {
+	function createDelayedPromise(delay,value,isResolved) {
 
 		return new Promessa((resolve,reject) => {
 
-			if (isResolve) {
+			if (isResolved) {
 				// resolve promise after timeout passes
 				setTimeout(resolve.bind(null,value),delay);
 				return;
@@ -57,14 +57,11 @@ function runExtensionsTestSuite() {
 	// testing: Promessa.all()
 	{
 		let PROMISE_REJECT_VALUE = 'In error',
-			instance,
-			promiseList;
+			instance;
 
 		// test: ensure Promessa.all() returns a promise instance
-		instance = Promessa.all([]);
-
 		assert(
-			instance.constructor === Promessa,
+			Promessa.all([]).constructor === Promessa,
 			'Promessa.all() should return a Promise'
 		);
 
@@ -81,13 +78,11 @@ function runExtensionsTestSuite() {
 
 
 		// test: check Promessa.all() chain of all resolved promises returns expected value list
-		promiseList = [
+		instance = Promessa.all([
 			createDelayedPromise(20,'First',true),
 			createDelayedPromise(200,'Second',true),
 			createDelayedPromise(40,'Third',true)
-		];
-
-		instance = Promessa.all(promiseList);
+		]);
 
 		instance
 			.then((valueList) => {
@@ -109,13 +104,11 @@ function runExtensionsTestSuite() {
 
 
 		// test: check Promessa.all() chain of promises with a rejection returns error
-		promiseList = [
+		instance = Promessa.all([
 			createDelayedPromise(20,'First',true),
 			createDelayedPromise(40,'Second',true),
-			createDelayedPromise(60,PROMISE_REJECT_VALUE,false) // promise rejection
-		];
-
-		instance = Promessa.all(promiseList);
+			createDelayedPromise(60,PROMISE_REJECT_VALUE,false) // rejection
+		]);
 
 		instance
 			.then(() => {
@@ -130,7 +123,7 @@ function runExtensionsTestSuite() {
 				process.nextTick(assert.bind(
 					null,
 					reason == PROMISE_REJECT_VALUE,
-					`Expected execution to end with an error value of [${PROMISE_REJECT_VALUE}]`
+					`Expected execution to end with a rejection of [${PROMISE_REJECT_VALUE}]`
 				));
 			});
 	}
@@ -143,10 +136,8 @@ function runExtensionsTestSuite() {
 			instance;
 
 		// test: ensure Promessa.race() returns a promise instance
-		instance = Promessa.race([]);
-
 		assert(
-			instance.constructor === Promessa,
+			Promessa.race([]).constructor === Promessa,
 			'Promessa.race() should return a Promise'
 		);
 
@@ -224,7 +215,7 @@ function runExtensionsTestSuite() {
 					process.nextTick(assert.bind(
 						null,
 						reason == PROMISE_REJECT_VALUE,
-						`Expected Promessa.race() to finish with a value of [${PROMISE_REJECT_VALUE}]`
+						`Expected Promessa.race() to finish with a rejection of [${PROMISE_REJECT_VALUE}]`
 					));
 				});
 		}

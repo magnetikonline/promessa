@@ -75,17 +75,18 @@ Promessa.all = function(promiseList) {
 		processor = Promessa.resolve();
 
 	// add each promise (or promise like) item to processor chain
-	promiseList.forEach((promiseItem) => {
-		processor = processor.then(() => {
+	for (let promiseItem of promiseList) {
+		processor = processor
+			.then(() => {
 
-			// await on promise to finalize
-			return promiseItem;
-		}).then((value) => {
+				// await on promise to finalize
+				return promiseItem;
+			}).then((value) => {
 
-			// add finalized value to list
-			valueList.push(value);
-		});
-	});
+				// add finalized value to list
+				valueList.push(value);
+			});
+	}
 
 	return processor.then(() => {
 
@@ -103,8 +104,7 @@ Promessa.race = function(promiseList) {
 
 	return new Promessa((resolve,reject) => {
 
-		promiseList.forEach((promiseItem) => {
-
+		for (let promiseItem of promiseList) {
 			// resolve each promise (or promise like) item and in turn resolve()/reject() our race promise
 			// by design the 'race' promise can only resolve/reject once, so first promise to finalize wins
 			promiseItem = (isPromise(promiseItem))
@@ -112,7 +112,7 @@ Promessa.race = function(promiseList) {
 				: Promessa.resolve(promiseItem); // convert non-promise
 
 			promiseItem.then(resolve,reject);
-		});
+		}
 	});
 };
 
@@ -154,38 +154,40 @@ function queueDeferred(promise) {
 	}
 
 	promise.deferredIsQueued = true;
-	process.nextTick(() => {
+	process.nextTick(queueDeferredProcessor.bind(null,promise));
+}
 
-		promise.deferredIsQueued = false;
-		while (promise.deferredList.length > 0) {
-			// shift deferred promise off stack and determine appropriate handler to call
-			let deferredPromise = promise.deferredList.shift(),
-				deferredHandler = (promise.state == STATE_RESOLVED)
-					? deferredPromise.onResolved
-					: deferredPromise.onRejected;
+function queueDeferredProcessor(promise) {
 
-			if (!deferredHandler) {
-				// no handler defined for deferred promise
-				// directly set deferred promise with parent finalized state/value
-				finalize(deferredPromise,promise.state,promise.value);
-				continue; // jump to next deferred
-			}
+	promise.deferredIsQueued = false;
+	while (promise.deferredList.length > 0) {
+		// shift deferred promise off stack and determine appropriate handler to call
+		let deferredPromise = promise.deferredList.shift(),
+			deferredHandler = (promise.state == STATE_RESOLVED)
+				? deferredPromise.onResolved
+				: deferredPromise.onRejected;
 
-			// execute deferred promise handler based on parent promise finalized state/value
-			let returnValue;
-
-			try {
-				returnValue = deferredHandler(promise.value);
-
-			} catch (ex) {
-				finalize(deferredPromise,STATE_REJECTED,ex);
-				continue; // jump next deferred
-			}
-
-			// resolve returned handler value
-			resolve(deferredPromise,returnValue);
+		if (!deferredHandler) {
+			// no handler defined for deferred promise
+			// directly set deferred promise with parent finalized state/value
+			finalize(deferredPromise,promise.state,promise.value);
+			continue; // jump to next deferred
 		}
-	});
+
+		// execute deferred promise handler based on parent promise finalized state/value
+		let returnValue;
+
+		try {
+			returnValue = deferredHandler(promise.value);
+
+		} catch (ex) {
+			finalize(deferredPromise,STATE_REJECTED,ex);
+			continue; // jump next deferred
+		}
+
+		// resolve returned handler value
+		resolve(deferredPromise,returnValue);
+	}
 }
 
 function runHandler(promise,handler) {
