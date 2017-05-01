@@ -48,10 +48,7 @@ class Promessa {
 
 Promessa.resolve = function(value) {
 
-	return new Promessa((resolve) => {
-
-		resolve(value);
-	});
+	return new Promessa((resolve) => resolve(value));
 };
 
 Promessa.reject = function(reason) {
@@ -88,11 +85,8 @@ Promessa.all = function(promiseList) {
 			});
 	}
 
-	return processor.then(() => {
-
-		// return list of finalized promise values
-		return valueList;
-	});
+	// return list of finalized promise values
+	return processor.then(() => valueList);
 };
 
 Promessa.race = function(promiseList) {
@@ -250,10 +244,12 @@ function resolve(promise,value) {
 
 			if (childPromise.state == STATE_PENDING) {
 				// promise not finalized - await
-				return childPromise.then(
-					(value) => { resolve(promise,value); },
-					(reason) => { finalize(promise,STATE_REJECTED,reason); }
+				childPromise.then(
+					(value) => resolve(promise,value),
+					(reason) => finalize(promise,STATE_REJECTED,reason)
 				);
+
+				return;
 			}
 
 			// promise already finalized

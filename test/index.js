@@ -193,7 +193,7 @@ function runExtensionsTestSuite() {
 
 		// test: check Promessa.race() chain of resolved promises with a single non-promise value resolves first
 		testResolved([
-			PROMISE_RESOLVE_VALUE, // not a promise - just a value which will be Promessa.resolve() wrapped inside Promessa.race()
+			PROMISE_RESOLVE_VALUE, // not a promise - just a value which will be Promessa.resolve() wrapped by Promessa.race()
 			createDelayedPromise(50,'Slowest',true),
 			createDelayedPromise(20,'Slow',true)
 		]);
