@@ -1,6 +1,6 @@
 {
 	"name": "promessa",
-	"version": "1.1.4",
+	"version": "1.1.5",
 	"description": "Promises library which complies with the Promises/A+ specification, written with a focus towards readability.",
 	"keywords": [
 		"promise",
