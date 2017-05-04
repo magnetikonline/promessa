@@ -153,18 +153,20 @@ function queueDeferred(promise) {
 
 function queueDeferredProcessor(promise) {
 
+	let { deferredList,state,value } = promise;
+
 	promise.deferredIsQueued = false;
-	while (promise.deferredList.length > 0) {
+	while (deferredList.length > 0) {
 		// shift deferred promise off stack and determine appropriate handler to call
-		let deferredPromise = promise.deferredList.shift(),
-			deferredHandler = (promise.state == STATE_RESOLVED)
+		let deferredPromise = deferredList.shift(),
+			deferredHandler = (state == STATE_RESOLVED)
 				? deferredPromise.onResolved
 				: deferredPromise.onRejected;
 
 		if (!deferredHandler) {
 			// no handler defined for deferred promise
 			// directly set deferred promise with parent finalized state/value
-			finalize(deferredPromise,promise.state,promise.value);
+			finalize(deferredPromise,state,value);
 			continue; // jump to next deferred
 		}
 
@@ -172,7 +174,7 @@ function queueDeferredProcessor(promise) {
 		let returnValue;
 
 		try {
-			returnValue = deferredHandler(promise.value);
+			returnValue = deferredHandler(value);
 
 		} catch (ex) {
 			finalize(deferredPromise,STATE_REJECTED,ex);
