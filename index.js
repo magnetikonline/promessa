@@ -48,7 +48,7 @@ class Promessa {
 
 Promessa.resolve = function(value) {
 
-	return new Promessa((resolve) => { resolve(value) });
+	return new Promessa((resolve) => { resolve(value); });
 };
 
 Promessa.reject = function(reason) {
@@ -245,8 +245,8 @@ function resolve(promise,value) {
 			if (childPromise.state == STATE_PENDING) {
 				// promise not finalized - await
 				childPromise.then(
-					(value) => { resolve(promise,value) },
-					(reason) => { finalize(promise,STATE_REJECTED,reason) }
+					(value) => { resolve(promise,value); },
+					(reason) => { finalize(promise,STATE_REJECTED,reason); }
 				);
 
 				return;
