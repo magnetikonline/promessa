@@ -78,7 +78,8 @@ Promessa.all = function(promiseList) {
 
 				// await on promise to finalize
 				return promiseItem;
-			}).then((value) => {
+			})
+			.then((value) => {
 
 				// add finalized value to list
 				valueList.push(value);
@@ -153,7 +154,7 @@ function queueDeferred(promise) {
 
 function queueDeferredProcessor(promise) {
 
-	let { deferredList,state,value } = promise;
+	let {deferredList,state,value} = promise;
 
 	promise.deferredIsQueued = false;
 	while (deferredList.length > 0) {
