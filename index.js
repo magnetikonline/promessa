@@ -65,7 +65,7 @@ Promessa.all = function(promiseList) {
 
 	// is promiseList an array?
 	if (!Array.isArray(promiseList)) {
-		throw new TypeError('Method expects an array of promises')
+		throw new TypeError('Function expects an array of promises');
 	}
 
 	let valueList = [],
@@ -94,7 +94,7 @@ Promessa.race = function(promiseList) {
 
 	// is promiseList an array?
 	if (!Array.isArray(promiseList)) {
-		throw new TypeError('Method expects an array of promises')
+		throw new TypeError('Function expects an array of promises');
 	}
 
 	return new Promessa((resolve,reject) => {
