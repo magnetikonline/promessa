@@ -244,7 +244,6 @@ function resolve(promise,value) {
 		if (isPromise(value)) {
 			// resolved value is itself another promise
 			let childPromise = value;
-
 			if (childPromise.state == STATE_PENDING) {
 				// promise not finalized - await
 				childPromise.then(
